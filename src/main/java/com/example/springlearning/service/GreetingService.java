@@ -3,6 +3,7 @@ package com.example.springlearning.service;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.example.springlearning.model.Student;
 import com.example.springlearning.repository.StudentRepository;
 
 @Service
@@ -26,8 +27,12 @@ public class GreetingService {
     }
 
     public String getStudentGreeting() {
-        String studentName = studentRepository.getStudentName();
-        return "Hello, " + studentName + "!";
+        Student student = studentRepository.getStudent();
+        return "Hello, " + student.getName() + "!";
+    }
+    
+    public Student getStudent() {
+        return studentRepository.getStudent();
     }
     
     public String getApplicationGreeting() {
