@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 
+import com.example.springlearning.dto.StudentRequest;
+import com.example.springlearning.dto.StudentResponse;
 import com.example.springlearning.model.Student;
 import com.example.springlearning.service.StudentService;
 
@@ -24,34 +26,68 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/student-data")
-    public Student studentData() {
-        return studentService.getStudent();
-    }
-
     @GetMapping("/students")
-    public List<Student> students() {
-        return studentService.getStudents();
+    public List<StudentResponse> students() {
+
+        List<Student> students = studentService.getStudents();
+
+        return students.stream()
+                .map(student -> new StudentResponse(
+                        student.getId(),
+                        student.getName(),
+                        student.getEmail()
+                ))
+                .toList();
     }
     
     @GetMapping("/students/{id}")
-    public Student studentById(@PathVariable int id) {
-        return studentService.getStudentById(id);
+    public StudentResponse studentById(@PathVariable int id) {
+
+        Student student = studentService.getStudentById(id);
+
+        return new StudentResponse(
+                student.getId(),
+                student.getName(),
+                student.getEmail()
+        );
     }
     
     @PostMapping("/students")
-    public Student createStudent(@RequestBody Student student) {
-        return studentService.createStudent(student);
+    public StudentResponse createStudent(@RequestBody StudentRequest request) {
+
+        Student student = new Student(
+                0,
+                request.getName(),
+                request.getEmail()
+        );
+
+        Student savedStudent = studentService.createStudent(student);
+
+        return new StudentResponse(
+                savedStudent.getId(),
+                savedStudent.getName(),
+                savedStudent.getEmail()
+        );
     }
     
     @PutMapping("/students/{id}")
-    public Student updateStudent(
+    public StudentResponse updateStudent(
             @PathVariable int id,
-            @RequestBody Student student) {
+            @RequestBody StudentRequest request) {
 
-        student.setId(id);
+        Student student = new Student(
+                id,
+                request.getName(),
+                request.getEmail()
+        );
 
-        return studentService.updateStudent(student);
+        Student updatedStudent = studentService.updateStudent(student);
+
+        return new StudentResponse(
+                updatedStudent.getId(),
+                updatedStudent.getName(),
+                updatedStudent.getEmail()
+        );
     }
     
     @DeleteMapping("/students/{id}")

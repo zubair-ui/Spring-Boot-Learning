@@ -17,10 +17,6 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public Student getStudent() {
-        return studentRepository.getStudent();
-    }
-
     public List<Student> getStudents() {
         return studentRepository.getStudents();
     }

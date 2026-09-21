@@ -13,13 +13,9 @@ public class StudentRepository {
     private final List<Student> students = new ArrayList<>();
 
     public StudentRepository() {
-        students.add(new Student(1, "Zubair", "zubair@example.com"));
-        students.add(new Student(2, "Ali", "ali@example.com"));
-        students.add(new Student(3, "Ahmed", "ahmed@example.com"));
-    }
-
-    public Student getStudent() {
-        return students.get(0);
+        students.add(new Student(1, "Zubair", "zubair@gmail.com"));
+        students.add(new Student(2, "Ali", "ali@gmail.com"));
+        students.add(new Student(3, "Ahmed", "ahmed@gmail.com"));
     }
 
     public List<Student> getStudents() {
