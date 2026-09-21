@@ -1,6 +1,9 @@
 package com.example.springlearning.service;
 
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Value;
 
 import com.example.springlearning.model.Student;
@@ -21,6 +24,10 @@ public class GreetingService {
     public String getGreeting() {
         return "Hello from GreetingService!";
     }
+    
+    public String getApplicationGreeting() {
+        return "Welcome to " + appName + "!";
+    }
 
     public String getPersonalizedGreeting(String name) {
         return "Hello, " + name + "!";
@@ -35,7 +42,8 @@ public class GreetingService {
         return studentRepository.getStudent();
     }
     
-    public String getApplicationGreeting() {
-        return "Welcome to " + appName + "!";
+    public List<Student> getStudents() {
+        return studentRepository.getStudents();
     }
+    
 }
