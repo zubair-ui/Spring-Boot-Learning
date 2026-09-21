@@ -8,20 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.springlearning.model.Student;
 import com.example.springlearning.service.GreetingService;
-import com.example.springlearning.service.MessageService;
 
 @RestController
 public class HelloController {
 	
     private final GreetingService greetingService;
-    private final MessageService messageService;
     
-    public HelloController(
-            GreetingService greetingService,
-            MessageService messageService) {
-
+    public HelloController(GreetingService greetingService) {
         this.greetingService = greetingService;
-        this.messageService = messageService;
     }
 
     @GetMapping("/hello")
@@ -32,11 +26,6 @@ public class HelloController {
     @GetMapping("/greet")
     public String greet() {
         return greetingService.getGreeting();
-    }
-
-    @GetMapping("/message")
-    public String message() {
-        return messageService.getMessage();
     }
     
     @GetMapping("/welcome")
