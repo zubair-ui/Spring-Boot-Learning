@@ -35,4 +35,9 @@ public class HelloController {
     public String message() {
         return messageService.getMessage();
     }
+    
+    @GetMapping("/student")
+    public String student() {
+        return greetingService.getStudentGreeting();
+    }
 }
