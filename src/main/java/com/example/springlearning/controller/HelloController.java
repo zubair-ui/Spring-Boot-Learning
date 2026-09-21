@@ -23,7 +23,7 @@ public class HelloController {
 
     @GetMapping("/hello")
     public String hello(@RequestParam String name) {
-        return "Hello, " + name + "!";
+        return greetingService.getPersonalizedGreeting(name);
     }
 
     @GetMapping("/greet")
