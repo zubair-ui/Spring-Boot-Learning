@@ -9,10 +9,10 @@ import com.example.springlearning.service.MessageService;
 
 @RestController
 public class HelloController {
-
+	
     private final GreetingService greetingService;
     private final MessageService messageService;
-
+    
     public HelloController(
             GreetingService greetingService,
             MessageService messageService) {
@@ -39,5 +39,10 @@ public class HelloController {
     @GetMapping("/student")
     public String student() {
         return greetingService.getStudentGreeting();
+    }
+          
+    @GetMapping("/welcome")
+    public String welcome() {
+        return greetingService.getApplicationGreeting();
     }
 }
