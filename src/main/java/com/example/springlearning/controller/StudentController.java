@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
 
 import com.example.springlearning.model.Student;
 import com.example.springlearning.service.StudentService;
@@ -53,7 +55,8 @@ public class StudentController {
     }
     
     @DeleteMapping("/students/{id}")
-    public boolean deleteStudent(@PathVariable int id) {
-        return studentService.deleteStudent(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteStudent(@PathVariable int id) {
+        studentService.deleteStudent(id);
     }
 }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.springlearning.exception.StudentNotFoundException;
 import com.example.springlearning.model.Student;
 import com.example.springlearning.repository.StudentRepository;
 
@@ -25,7 +26,13 @@ public class StudentService {
     }
     
     public Student getStudentById(int id) {
-        return studentRepository.findById(id);
+        Student student = studentRepository.findById(id);
+
+        if (student == null) {
+            throw new StudentNotFoundException(id);
+        }
+
+        return student;
     }
     
     public Student createStudent(Student student) {
@@ -33,10 +40,20 @@ public class StudentService {
     }
     
     public Student updateStudent(Student student) {
-        return studentRepository.update(student);
+        Student updatedStudent = studentRepository.update(student);
+
+        if (updatedStudent == null) {
+            throw new StudentNotFoundException(student.getId());
+        }
+
+        return updatedStudent;
     }
     
-    public boolean deleteStudent(int id) {
-        return studentRepository.deleteById(id);
+    public void deleteStudent(int id) {
+        boolean deleted = studentRepository.deleteById(id);
+
+        if (!deleted) {
+            throw new StudentNotFoundException(id);
+        }
     }
 }
