@@ -1,49 +1,23 @@
 package com.example.springlearning.service;
 
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Value;
-
-import com.example.springlearning.model.Student;
-import com.example.springlearning.repository.StudentRepository;
+import org.springframework.stereotype.Service;
 
 @Service
 public class GreetingService {
 
-    private final StudentRepository studentRepository;
-    
     @Value("${app.name:Default Application}")
     private String appName;
 
-    public GreetingService(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
-
     public String getGreeting() {
         return "Hello from GreetingService!";
-    }
-    
-    public String getApplicationGreeting() {
-        return "Welcome to " + appName + "!";
     }
 
     public String getPersonalizedGreeting(String name) {
         return "Hello, " + name + "!";
     }
 
-    public String getStudentGreeting() {
-        Student student = studentRepository.getStudent();
-        return "Hello, " + student.getName() + "!";
+    public String getApplicationGreeting() {
+        return "Welcome to " + appName + "!";
     }
-    
-    public Student getStudent() {
-        return studentRepository.getStudent();
-    }
-    
-    public List<Student> getStudents() {
-        return studentRepository.getStudents();
-    }
-    
 }
