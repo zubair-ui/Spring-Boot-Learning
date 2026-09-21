@@ -6,50 +6,45 @@ import org.springframework.stereotype.Service;
 
 import com.example.springlearning.exception.StudentNotFoundException;
 import com.example.springlearning.model.Student;
-import com.example.springlearning.repository.StudentRepository;
+import com.example.springlearning.repository.StudentJpaRepository;	
 
 @Service
 public class StudentService {
 
-    private final StudentRepository studentRepository;
+	private final StudentJpaRepository studentRepository;
 
-    public StudentService(StudentRepository studentRepository) {
+    public StudentService(StudentJpaRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
 
     public List<Student> getStudents() {
-        return studentRepository.getStudents();
+        return studentRepository.findAll();
     }
-    
+
     public Student getStudentById(int id) {
-        Student student = studentRepository.findById(id);
-
-        if (student == null) {
-            throw new StudentNotFoundException(id);
-        }
-
-        return student;
+        return studentRepository.findById(id)
+                .orElseThrow(() -> new StudentNotFoundException(id));
     }
-    
+
     public Student createStudent(Student student) {
         return studentRepository.save(student);
     }
-    
+
     public Student updateStudent(Student student) {
-        Student updatedStudent = studentRepository.update(student);
+        Student existingStudent = studentRepository.findById(student.getId())
+                .orElseThrow(() -> new StudentNotFoundException(student.getId()));
 
-        if (updatedStudent == null) {
-            throw new StudentNotFoundException(student.getId());
-        }
+        existingStudent.setName(student.getName());
+        existingStudent.setEmail(student.getEmail());
 
-        return updatedStudent;
+        return studentRepository.save(existingStudent);
     }
-    
-    public void deleteStudent(int id) {
-        boolean deleted = studentRepository.deleteById(id);
 
-        if (!deleted) {
+    public void deleteStudent(int id) {
+        if (!studentRepository.existsById(id)) {
             throw new StudentNotFoundException(id);
         }
+
+        studentRepository.deleteById(id);
     }
 }
