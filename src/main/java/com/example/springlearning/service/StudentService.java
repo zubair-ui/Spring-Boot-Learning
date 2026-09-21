@@ -23,4 +23,20 @@ public class StudentService {
     public List<Student> getStudents() {
         return studentRepository.getStudents();
     }
+    
+    public Student getStudentById(int id) {
+        return studentRepository.findById(id);
+    }
+    
+    public Student createStudent(Student student) {
+        return studentRepository.save(student);
+    }
+    
+    public Student updateStudent(Student student) {
+        return studentRepository.update(student);
+    }
+    
+    public boolean deleteStudent(int id) {
+        return studentRepository.deleteById(id);
+    }
 }
