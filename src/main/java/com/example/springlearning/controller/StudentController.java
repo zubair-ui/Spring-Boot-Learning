@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 
 import com.example.springlearning.dto.StudentRequest;
 import com.example.springlearning.dto.StudentResponse;
@@ -18,8 +19,10 @@ import com.example.springlearning.model.Student;
 import com.example.springlearning.service.StudentService;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 
 @RestController
+@Validated
 public class StudentController {
 
     private final StudentService studentService;
@@ -43,7 +46,8 @@ public class StudentController {
     }
     
     @GetMapping("/students/{id}")
-    public StudentResponse studentById(@PathVariable int id) {
+    public StudentResponse studentById(@PathVariable 
+    		@Positive(message = "ID must be positive") int id) {
 
         Student student = studentService.getStudentById(id);
 
@@ -74,7 +78,7 @@ public class StudentController {
     
     @PutMapping("/students/{id}")
     public StudentResponse updateStudent(
-            @PathVariable int id,
+            @PathVariable @Positive(message = "ID must be positive") int id,
             @Valid @RequestBody StudentRequest request) {
 
         Student student = new Student(
@@ -94,7 +98,8 @@ public class StudentController {
     
     @DeleteMapping("/students/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteStudent(@PathVariable int id) {
+    public void deleteStudent(
+    		@PathVariable @Positive(message = "ID must be positive")int id) {
         studentService.deleteStudent(id);
     }
 }
