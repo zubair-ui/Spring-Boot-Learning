@@ -2,6 +2,8 @@ package com.example.springlearning.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.example.springlearning.exception.StudentNotFoundException;
@@ -10,6 +12,9 @@ import com.example.springlearning.repository.StudentJpaRepository;
 
 @Service
 public class StudentService {
+	
+	private static final Logger logger =
+	        LoggerFactory.getLogger(StudentService.class);
 
 	private final StudentJpaRepository studentRepository;
 
@@ -18,16 +23,32 @@ public class StudentService {
     }
 
     public List<Student> getStudents() {
+
+        logger.info("Fetching all students");
+
         return studentRepository.findAll();
     }
 
     public Student getStudentById(int id) {
+
+        logger.info("Fetching student with ID: {}", id);
+
         return studentRepository.findById(id)
-                .orElseThrow(() -> new StudentNotFoundException(id));
+                .orElseThrow(() -> {
+                    logger.warn("Student with ID {} was not found", id);
+                    return new StudentNotFoundException(id);
+                });
     }
 
     public Student createStudent(Student student) {
-        return studentRepository.save(student);
+
+        logger.info("Creating student with name: {}", student.getName());
+
+        Student savedStudent = studentRepository.save(student);
+
+        logger.info("Student created with ID: {}", savedStudent.getId());
+
+        return savedStudent;
     }
 
     public Student updateStudent(Student student) {
@@ -41,10 +62,16 @@ public class StudentService {
     }
 
     public void deleteStudent(int id) {
+
+        logger.info("Deleting student with ID: {}", id);
+
         if (!studentRepository.existsById(id)) {
+            logger.error("Cannot delete student with ID {} because it does not exist", id);
             throw new StudentNotFoundException(id);
         }
 
         studentRepository.deleteById(id);
+
+        logger.info("Student with ID {} deleted successfully", id);
     }
 }
