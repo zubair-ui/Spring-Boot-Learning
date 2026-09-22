@@ -17,6 +17,8 @@ import com.example.springlearning.dto.StudentResponse;
 import com.example.springlearning.model.Student;
 import com.example.springlearning.service.StudentService;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class StudentController {
 
@@ -53,7 +55,7 @@ public class StudentController {
     }
     
     @PostMapping("/students")
-    public StudentResponse createStudent(@RequestBody StudentRequest request) {
+    public StudentResponse createStudent(@Valid @RequestBody StudentRequest request) {
 
         Student student = new Student(
                 0,
@@ -73,7 +75,7 @@ public class StudentController {
     @PutMapping("/students/{id}")
     public StudentResponse updateStudent(
             @PathVariable int id,
-            @RequestBody StudentRequest request) {
+            @Valid @RequestBody StudentRequest request) {
 
         Student student = new Student(
                 id,
