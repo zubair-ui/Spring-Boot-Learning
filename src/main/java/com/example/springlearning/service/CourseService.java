@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.example.springlearning.exception.CourseNotFoundException;
 import com.example.springlearning.model.Course;
 import com.example.springlearning.repository.CourseJpaRepository;
 
@@ -22,5 +23,11 @@ public class CourseService {
 
     public Course createCourse(Course course) {
         return courseRepository.save(course);
+    }
+    
+    public Course getCourseById(int id) {
+
+        return courseRepository.findById(id)
+                .orElseThrow(() -> new CourseNotFoundException(id));
     }
 }

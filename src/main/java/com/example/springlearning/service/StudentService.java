@@ -52,11 +52,13 @@ public class StudentService {
     }
 
     public Student updateStudent(Student student) {
+
         Student existingStudent = studentRepository.findById(student.getId())
                 .orElseThrow(() -> new StudentNotFoundException(student.getId()));
 
         existingStudent.setName(student.getName());
         existingStudent.setEmail(student.getEmail());
+        existingStudent.setCourse(student.getCourse());
 
         return studentRepository.save(existingStudent);
     }

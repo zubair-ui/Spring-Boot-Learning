@@ -3,6 +3,8 @@ package com.example.springlearning.controller;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,27 +13,32 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.http.ResponseEntity;
-
-import com.example.springlearning.dto.StudentPatchRequest;
-import com.example.springlearning.dto.StudentRequest;
-import com.example.springlearning.dto.StudentResponse;
-import com.example.springlearning.model.Student;
-import com.example.springlearning.service.StudentService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 
+import com.example.springlearning.dto.CourseResponse;
+import com.example.springlearning.dto.StudentPatchRequest;
+import com.example.springlearning.dto.StudentRequest;
+import com.example.springlearning.dto.StudentResponse;
+import com.example.springlearning.model.Course;
+import com.example.springlearning.model.Student;
+import com.example.springlearning.service.CourseService;
+import com.example.springlearning.service.StudentService;
 
 @RestController
 @Validated
 public class StudentController {
 
     private final StudentService studentService;
+    private final CourseService courseService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(
+            StudentService studentService,
+            CourseService courseService) {
+
         this.studentService = studentService;
+        this.courseService = courseService;
     }
 
     @GetMapping("/students")
@@ -40,31 +47,22 @@ public class StudentController {
         List<Student> students = studentService.getStudents();
 
         return students.stream()
-                .map(student -> new StudentResponse(
-                        student.getId(),
-                        student.getName(),
-                        student.getEmail()
-                ))
+                .map(this::toStudentResponse)
                 .toList();
     }
-    
+
     @GetMapping("/students/{id}")
-    public ResponseEntity<StudentResponse> studentById(@PathVariable 
-    		@Positive(message = "ID must be positive") int id) {
+    public ResponseEntity<StudentResponse> studentById(
+            @PathVariable @Positive(message = "ID must be positive") int id) {
 
         Student student = studentService.getStudentById(id);
 
-        StudentResponse response = new StudentResponse(
-                student.getId(),
-                student.getName(),
-                student.getEmail()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(toStudentResponse(student));
     }
-    
+
     @PostMapping("/students")
-    public ResponseEntity<StudentResponse> createStudent(@Valid @RequestBody StudentRequest request) {
+    public ResponseEntity<StudentResponse> createStudent(
+            @Valid @RequestBody StudentRequest request) {
 
         Student student = new Student(
                 0,
@@ -72,21 +70,24 @@ public class StudentController {
                 request.getEmail()
         );
 
-        Student savedStudent = studentService.createStudent(student);
+        if (request.getCourseId() != null) {
 
-        StudentResponse response = new StudentResponse(
-                savedStudent.getId(),
-                savedStudent.getName(),
-                savedStudent.getEmail()
-        );
+            Course course = courseService.getCourseById(
+                    request.getCourseId()
+            );
+
+            student.setCourse(course);
+        }
+
+        Student savedStudent = studentService.createStudent(student);
 
         URI location = URI.create("/students/" + savedStudent.getId());
 
         return ResponseEntity
                 .created(location)
-                .body(response);
+                .body(toStudentResponse(savedStudent));
     }
-    
+
     @PutMapping("/students/{id}")
     public ResponseEntity<StudentResponse> updateStudent(
             @PathVariable @Positive(message = "ID must be positive") int id,
@@ -98,21 +99,33 @@ public class StudentController {
                 request.getEmail()
         );
 
+        if (request.getCourseId() != null) {
+
+            Course course = courseService.getCourseById(
+                    request.getCourseId()
+            );
+
+            student.setCourse(course);
+        }
+
         Student updatedStudent = studentService.updateStudent(student);
 
-        StudentResponse response = new StudentResponse(
-                updatedStudent.getId(),
-                updatedStudent.getName(),
-                updatedStudent.getEmail()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(toStudentResponse(updatedStudent));
     }
-    
+
+    @DeleteMapping("/students/{id}")
+    public ResponseEntity<Void> deleteStudent(
+            @PathVariable @Positive(message = "ID must be positive") int id) {
+
+        studentService.deleteStudent(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @PatchMapping("/students/{id}")
     public ResponseEntity<StudentResponse> patchStudent(
             @PathVariable @Positive(message = "ID must be positive") int id,
-            @RequestBody StudentPatchRequest request) {
+            @Valid @RequestBody StudentPatchRequest request) {
 
         Student student = studentService.getStudentById(id);
 
@@ -124,23 +137,37 @@ public class StudentController {
             student.setEmail(request.getEmail());
         }
 
+        if (request.getCourseId() != null) {
+
+            Course course = courseService.getCourseById(
+                    request.getCourseId()
+            );
+
+            student.setCourse(course);
+        }
+
         Student updatedStudent = studentService.updateStudent(student);
 
-        StudentResponse response = new StudentResponse(
-                updatedStudent.getId(),
-                updatedStudent.getName(),
-                updatedStudent.getEmail()
-        );
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(toStudentResponse(updatedStudent));
     }
-    
-    @DeleteMapping("/students/{id}")
-    public ResponseEntity<Void> deleteStudent(
-            @PathVariable @Positive(message = "ID must be positive") int id) {
 
-        studentService.deleteStudent(id);
+    private StudentResponse toStudentResponse(Student student) {
 
-        return ResponseEntity.noContent().build();
+        CourseResponse courseResponse = null;
+
+        if (student.getCourse() != null) {
+
+            courseResponse = new CourseResponse(
+                    student.getCourse().getId(),
+                    student.getCourse().getName()
+            );
+        }
+
+        return new StudentResponse(
+                student.getId(),
+                student.getName(),
+                student.getEmail(),
+                courseResponse
+        );
     }
 }
