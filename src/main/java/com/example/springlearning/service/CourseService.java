@@ -6,28 +6,71 @@ import org.springframework.stereotype.Service;
 
 import com.example.springlearning.exception.CourseNotFoundException;
 import com.example.springlearning.model.Course;
+import com.example.springlearning.model.Student;
 import com.example.springlearning.repository.CourseJpaRepository;
+import com.example.springlearning.repository.StudentJpaRepository;
 
 @Service
 public class CourseService {
 
     private final CourseJpaRepository courseRepository;
+    private final StudentJpaRepository studentRepository;
 
-    public CourseService(CourseJpaRepository courseRepository) {
+    public CourseService(
+            CourseJpaRepository courseRepository,
+            StudentJpaRepository studentRepository) {
+
         this.courseRepository = courseRepository;
+        this.studentRepository = studentRepository;
     }
 
     public List<Course> getCourses() {
         return courseRepository.findAll();
     }
 
-    public Course createCourse(Course course) {
-        return courseRepository.save(course);
-    }
-    
     public Course getCourseById(int id) {
 
         return courseRepository.findById(id)
                 .orElseThrow(() -> new CourseNotFoundException(id));
+    }
+
+    public Course createCourse(Course course) {
+        return courseRepository.save(course);
+    }
+
+    public List<Student> getStudentsByCourseId(int courseId) {
+
+        getCourseById(courseId);
+
+        return studentRepository.findByCourseId(courseId);
+    }
+
+    public Course updateCourse(Course course) {
+
+        Course existingCourse = courseRepository.findById(course.getId())
+                .orElseThrow(() ->
+                        new CourseNotFoundException(course.getId()));
+
+        existingCourse.setName(course.getName());
+
+        return courseRepository.save(existingCourse);
+    }
+
+    public Course patchCourse(int id, String name) {
+
+        Course existingCourse = getCourseById(id);
+
+        if (name != null) {
+            existingCourse.setName(name);
+        }
+
+        return courseRepository.save(existingCourse);
+    }
+
+    public void deleteCourse(int id) {
+
+        Course existingCourse = getCourseById(id);
+
+        courseRepository.delete(existingCourse);
     }
 }
