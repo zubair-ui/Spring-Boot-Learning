@@ -10,12 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.constraints.Positive;
+
 import com.example.springlearning.dto.CourseRequest;
 import com.example.springlearning.dto.CourseResponse;
+import com.example.springlearning.dto.CourseStudentResponse;
 import com.example.springlearning.model.Course;
 import com.example.springlearning.service.CourseService;
-
-import jakarta.validation.constraints.Positive;
 
 @RestController
 @Validated
@@ -26,20 +27,6 @@ public class CourseController {
     public CourseController(CourseService courseService) {
         this.courseService = courseService;
     }
-    
-    @GetMapping("/courses/{id}")
-    public ResponseEntity<CourseResponse> getCourseById(
-            @PathVariable @Positive(message = "ID must be positive") int id) {
-
-        Course course = courseService.getCourseById(id);
-
-        return ResponseEntity.ok(
-                new CourseResponse(
-                        course.getId(),
-                        course.getName()
-                )
-        );
-    }
 
     @GetMapping("/courses")
     public List<CourseResponse> getCourses() {
@@ -47,11 +34,17 @@ public class CourseController {
         List<Course> courses = courseService.getCourses();
 
         return courses.stream()
-                .map(course -> new CourseResponse(
-                        course.getId(),
-                        course.getName()
-                ))
+                .map(this::toCourseResponse)
                 .toList();
+    }
+
+    @GetMapping("/courses/{id}")
+    public ResponseEntity<CourseResponse> getCourseById(
+            @PathVariable @Positive(message = "ID must be positive") int id) {
+
+        Course course = courseService.getCourseById(id);
+
+        return ResponseEntity.ok(toCourseResponse(course));
     }
 
     @PostMapping("/courses")
@@ -65,9 +58,25 @@ public class CourseController {
 
         Course savedCourse = courseService.createCourse(course);
 
+        return toCourseResponse(savedCourse);
+    }
+
+    private CourseResponse toCourseResponse(Course course) {
+
+        List<CourseStudentResponse> students =
+                course.getStudents()
+                        .stream()
+                        .map(student -> new CourseStudentResponse(
+                                student.getId(),
+                                student.getName(),
+                                student.getEmail()
+                        ))
+                        .toList();
+
         return new CourseResponse(
-                savedCourse.getId(),
-                savedCourse.getName()
+                course.getId(),
+                course.getName(),
+                students
         );
     }
 }

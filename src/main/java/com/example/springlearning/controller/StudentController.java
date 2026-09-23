@@ -159,7 +159,8 @@ public class StudentController {
 
             courseResponse = new CourseResponse(
                     student.getCourse().getId(),
-                    student.getCourse().getName()
+                    student.getCourse().getName(),
+                    List.of()
             );
         }
 
