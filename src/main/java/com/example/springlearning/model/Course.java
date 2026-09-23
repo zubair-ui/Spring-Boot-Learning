@@ -7,7 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.ManyToMany;
 
 @Entity
 public class Course {
@@ -18,7 +18,7 @@ public class Course {
 
     private String name;
 
-    @OneToMany(mappedBy = "course")
+    @ManyToMany(mappedBy = "courses")
     private List<Student> students = new ArrayList<>();
 
     public Course() {

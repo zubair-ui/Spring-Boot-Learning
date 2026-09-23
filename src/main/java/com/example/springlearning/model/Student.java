@@ -1,11 +1,13 @@
 package com.example.springlearning.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -18,12 +20,11 @@ public class Student {
     private String name;
     private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
-
     @OneToOne(mappedBy = "student")
     private StudentProfile profile;
+
+    @ManyToMany
+    private List<Course> courses = new ArrayList<>();
 
     public Student() {
     }
@@ -46,12 +47,12 @@ public class Student {
         return email;
     }
 
-    public Course getCourse() {
-        return course;
-    }
-
     public StudentProfile getProfile() {
         return profile;
+    }
+
+    public List<Course> getCourses() {
+        return courses;
     }
 
     public void setId(int id) {
@@ -66,11 +67,11 @@ public class Student {
         this.email = email;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
     public void setProfile(StudentProfile profile) {
         this.profile = profile;
+    }
+
+    public void setCourses(List<Course> courses) {
+        this.courses = courses;
     }
 }

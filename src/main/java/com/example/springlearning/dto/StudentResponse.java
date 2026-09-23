@@ -1,22 +1,24 @@
 package com.example.springlearning.dto;
 
+import java.util.List;
+
 public class StudentResponse {
 
     private int id;
     private String name;
     private String email;
-    private CourseResponse course;
+    private List<CourseResponse> courses;
 
     public StudentResponse(
             int id,
             String name,
             String email,
-            CourseResponse course) {
+            List<CourseResponse> courses) {
 
         this.id = id;
         this.name = name;
         this.email = email;
-        this.course = course;
+        this.courses = courses;
     }
 
     public int getId() {
@@ -31,7 +33,7 @@ public class StudentResponse {
         return email;
     }
 
-    public CourseResponse getCourse() {
-        return course;
+    public List<CourseResponse> getCourses() {
+        return courses;
     }
 }

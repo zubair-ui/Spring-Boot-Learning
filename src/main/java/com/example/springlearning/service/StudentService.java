@@ -9,33 +9,31 @@ import org.springframework.stereotype.Service;
 import com.example.springlearning.exception.StudentNotFoundException;
 import com.example.springlearning.model.Student;
 import com.example.springlearning.repository.StudentJpaRepository;
-import com.example.springlearning.repository.StudentProfileJpaRepository;	
+import com.example.springlearning.repository.StudentProfileJpaRepository;
 
 @Service
 public class StudentService {
-	
-	private static final Logger logger =
-	        LoggerFactory.getLogger(StudentService.class);
 
-	private final StudentJpaRepository studentRepository;
-	private final StudentProfileJpaRepository profileRepository;
+    private static final Logger logger =
+            LoggerFactory.getLogger(StudentService.class);
 
-	public StudentService(
-	        StudentJpaRepository studentRepository,
-	        StudentProfileJpaRepository profileRepository) {
+    private final StudentJpaRepository studentRepository;
+    private final StudentProfileJpaRepository profileRepository;
 
-	    this.studentRepository = studentRepository;
-	    this.profileRepository = profileRepository;
-	}
+    public StudentService(
+            StudentJpaRepository studentRepository,
+            StudentProfileJpaRepository profileRepository) {
+
+        this.studentRepository = studentRepository;
+        this.profileRepository = profileRepository;
+    }
+
     public List<Student> getStudents() {
-
         logger.info("Fetching all students");
-
         return studentRepository.findAll();
     }
 
     public Student getStudentById(int id) {
-
         logger.info("Fetching student with ID: {}", id);
 
         return studentRepository.findById(id)
@@ -46,7 +44,6 @@ public class StudentService {
     }
 
     public Student createStudent(Student student) {
-
         logger.info("Creating student with name: {}", student.getName());
 
         Student savedStudent = studentRepository.save(student);
@@ -58,18 +55,20 @@ public class StudentService {
 
     public Student updateStudent(Student student) {
 
-        Student existingStudent = studentRepository.findById(student.getId())
-                .orElseThrow(() -> new StudentNotFoundException(student.getId()));
+        Student existingStudent =
+                studentRepository.findById(student.getId())
+                        .orElseThrow(() ->
+                                new StudentNotFoundException(
+                                        student.getId()));
 
         existingStudent.setName(student.getName());
         existingStudent.setEmail(student.getEmail());
-        existingStudent.setCourse(student.getCourse());
+        existingStudent.setCourses(student.getCourses());
 
         return studentRepository.save(existingStudent);
     }
 
     public void deleteStudent(int id) {
-
         logger.info("Deleting student with ID: {}", id);
 
         Student student = studentRepository.findById(id)
@@ -82,7 +81,6 @@ public class StudentService {
                 });
 
         if (student.getProfile() != null) {
-
             profileRepository.delete(student.getProfile());
         }
 

@@ -1,5 +1,7 @@
 package com.example.springlearning.dto;
 
+import java.util.List;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -18,8 +20,7 @@ public class StudentRequest {
           message = "Email must not exceed 100 characters")
     private String email;
 
-    @Positive(message = "Course ID must be positive")
-    private Integer courseId;
+    private List<@Positive(message = "Course ID must be positive") Integer> courseIds;
 
     public StudentRequest() {
     }
@@ -32,8 +33,8 @@ public class StudentRequest {
         return email;
     }
 
-    public Integer getCourseId() {
-        return courseId;
+    public List<Integer> getCourseIds() {
+        return courseIds;
     }
 
     public void setName(String name) {
@@ -44,7 +45,7 @@ public class StudentRequest {
         this.email = email;
     }
 
-    public void setCourseId(Integer courseId) {
-        this.courseId = courseId;
+    public void setCourseIds(List<Integer> courseIds) {
+        this.courseIds = courseIds;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.springlearning.controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 
-import com.example.springlearning.dto.CourseResponse;
 import com.example.springlearning.dto.StudentPatchRequest;
 import com.example.springlearning.dto.StudentRequest;
 import com.example.springlearning.dto.StudentResponse;
@@ -70,13 +70,16 @@ public class StudentController {
                 request.getEmail()
         );
 
-        if (request.getCourseId() != null) {
+        if (request.getCourseIds() != null) {
 
-            Course course = courseService.getCourseById(
-                    request.getCourseId()
-            );
+        	List<Course> courses = new ArrayList<>(
+        	        request.getCourseIds()
+        	                .stream()
+        	                .map(courseService::getCourseById)
+        	                .toList()
+        	);
 
-            student.setCourse(course);
+            student.setCourses(courses);
         }
 
         Student savedStudent = studentService.createStudent(student);
@@ -99,13 +102,16 @@ public class StudentController {
                 request.getEmail()
         );
 
-        if (request.getCourseId() != null) {
+        if (request.getCourseIds() != null) {
 
-            Course course = courseService.getCourseById(
-                    request.getCourseId()
-            );
+        	List<Course> courses = new ArrayList<>(
+        	        request.getCourseIds()
+        	                .stream()
+        	                .map(courseService::getCourseById)
+        	                .toList()
+        	);
 
-            student.setCourse(course);
+            student.setCourses(courses);
         }
 
         Student updatedStudent = studentService.updateStudent(student);
@@ -137,13 +143,16 @@ public class StudentController {
             student.setEmail(request.getEmail());
         }
 
-        if (request.getCourseId() != null) {
+        if (request.getCourseIds() != null) {
 
-            Course course = courseService.getCourseById(
-                    request.getCourseId()
-            );
+        	List<Course> courses = new ArrayList<>(
+        	        request.getCourseIds()
+        	                .stream()
+        	                .map(courseService::getCourseById)
+        	                .toList()
+        	);
 
-            student.setCourse(course);
+            student.setCourses(courses);
         }
 
         Student updatedStudent = studentService.updateStudent(student);
@@ -153,22 +162,18 @@ public class StudentController {
 
     private StudentResponse toStudentResponse(Student student) {
 
-        CourseResponse courseResponse = null;
-
-        if (student.getCourse() != null) {
-
-            courseResponse = new CourseResponse(
-                    student.getCourse().getId(),
-                    student.getCourse().getName(),
-                    List.of()
-            );
-        }
-
         return new StudentResponse(
                 student.getId(),
                 student.getName(),
                 student.getEmail(),
-                courseResponse
+                student.getCourses()
+                        .stream()
+                        .map(course -> new com.example.springlearning.dto.CourseResponse(
+                                course.getId(),
+                                course.getName(),
+                                List.of()
+                        ))
+                        .toList()
         );
     }
 }

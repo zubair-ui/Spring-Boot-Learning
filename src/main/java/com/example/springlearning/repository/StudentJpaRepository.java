@@ -8,5 +8,5 @@ import com.example.springlearning.model.Student;
 
 public interface StudentJpaRepository extends JpaRepository<Student, Integer> {
 
-    List<Student> findByCourseId(int courseId);
+    List<Student> findByCoursesId(int courseId);
 }

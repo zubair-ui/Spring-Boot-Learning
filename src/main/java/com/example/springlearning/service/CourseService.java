@@ -42,14 +42,16 @@ public class CourseService {
 
         getCourseById(courseId);
 
-        return studentRepository.findByCourseId(courseId);
+        return studentRepository.findByCoursesId(courseId);
     }
 
     public Course updateCourse(Course course) {
 
-        Course existingCourse = courseRepository.findById(course.getId())
-                .orElseThrow(() ->
-                        new CourseNotFoundException(course.getId()));
+        Course existingCourse =
+                courseRepository.findById(course.getId())
+                        .orElseThrow(() ->
+                                new CourseNotFoundException(
+                                        course.getId()));
 
         existingCourse.setName(course.getName());
 
@@ -72,10 +74,10 @@ public class CourseService {
         Course course = getCourseById(id);
 
         List<Student> students =
-                studentRepository.findByCourseId(id);
+                studentRepository.findByCoursesId(id);
 
         for (Student student : students) {
-            student.setCourse(null);
+            student.getCourses().remove(course);
         }
 
         studentRepository.saveAll(students);
