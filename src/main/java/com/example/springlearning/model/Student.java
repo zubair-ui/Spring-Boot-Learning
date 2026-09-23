@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 
 @Entity
 public class Student {
@@ -20,6 +21,9 @@ public class Student {
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
+
+    @OneToOne(mappedBy = "student")
+    private StudentProfile profile;
 
     public Student() {
     }
@@ -46,6 +50,10 @@ public class Student {
         return course;
     }
 
+    public StudentProfile getProfile() {
+        return profile;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -60,5 +68,9 @@ public class Student {
 
     public void setCourse(Course course) {
         this.course = course;
+    }
+
+    public void setProfile(StudentProfile profile) {
+        this.profile = profile;
     }
 }

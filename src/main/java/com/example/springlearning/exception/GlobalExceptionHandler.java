@@ -76,4 +76,12 @@ public class GlobalExceptionHandler {
                 errors
         );
     }
+    
+    @ExceptionHandler(StudentProfileNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleStudentProfileNotFound(
+            StudentProfileNotFoundException exception) {
+
+        return exception.getMessage();
+    }
 }
