@@ -8,7 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.example.springlearning.exception.StudentNotFoundException;
 import com.example.springlearning.model.Student;
-import com.example.springlearning.repository.StudentJpaRepository;	
+import com.example.springlearning.repository.StudentJpaRepository;
+import com.example.springlearning.repository.StudentProfileJpaRepository;	
 
 @Service
 public class StudentService {
@@ -17,11 +18,15 @@ public class StudentService {
 	        LoggerFactory.getLogger(StudentService.class);
 
 	private final StudentJpaRepository studentRepository;
+	private final StudentProfileJpaRepository profileRepository;
 
-    public StudentService(StudentJpaRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
+	public StudentService(
+	        StudentJpaRepository studentRepository,
+	        StudentProfileJpaRepository profileRepository) {
 
+	    this.studentRepository = studentRepository;
+	    this.profileRepository = profileRepository;
+	}
     public List<Student> getStudents() {
 
         logger.info("Fetching all students");
@@ -67,12 +72,21 @@ public class StudentService {
 
         logger.info("Deleting student with ID: {}", id);
 
-        if (!studentRepository.existsById(id)) {
-            logger.error("Cannot delete student with ID {} because it does not exist", id);
-            throw new StudentNotFoundException(id);
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> {
+                    logger.error(
+                            "Cannot delete student with ID {} because it does not exist",
+                            id);
+
+                    return new StudentNotFoundException(id);
+                });
+
+        if (student.getProfile() != null) {
+
+            profileRepository.delete(student.getProfile());
         }
 
-        studentRepository.deleteById(id);
+        studentRepository.delete(student);
 
         logger.info("Student with ID {} deleted successfully", id);
     }

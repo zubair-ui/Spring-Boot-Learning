@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 @Entity
@@ -17,6 +18,7 @@ public class StudentProfile {
     private String address;
 
     @OneToOne
+    @JoinColumn(name = "student_id")
     private Student student;
 
     public StudentProfile() {

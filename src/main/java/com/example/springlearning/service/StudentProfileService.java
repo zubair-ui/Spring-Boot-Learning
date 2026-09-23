@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.example.springlearning.exception.StudentProfileNotFoundException;
+import com.example.springlearning.model.Student;
 import com.example.springlearning.model.StudentProfile;
 import com.example.springlearning.repository.StudentProfileJpaRepository;
 
@@ -32,6 +33,57 @@ public class StudentProfileService {
 
     public StudentProfile createProfile(StudentProfile profile) {
         return profileRepository.save(profile);
+    }
+
+    public StudentProfile updateProfile(StudentProfile profile) {
+
+        StudentProfile existingProfile =
+                getProfileById(profile.getId());
+
+        existingProfile.setPhone(profile.getPhone());
+        existingProfile.setAddress(profile.getAddress());
+
+        if (existingProfile.getStudent() != null) {
+            existingProfile.getStudent().setProfile(null);
+        }
+
+        existingProfile.setStudent(profile.getStudent());
+
+        if (profile.getStudent() != null) {
+            profile.getStudent().setProfile(existingProfile);
+        }
+
+        return profileRepository.save(existingProfile);
+    }
+
+    public StudentProfile patchProfile(
+            int id,
+            String phone,
+            String address,
+            Student student) {
+
+        StudentProfile existingProfile =
+                getProfileById(id);
+
+        if (phone != null) {
+            existingProfile.setPhone(phone);
+        }
+
+        if (address != null) {
+            existingProfile.setAddress(address);
+        }
+
+        if (student != null) {
+
+            if (existingProfile.getStudent() != null) {
+                existingProfile.getStudent().setProfile(null);
+            }
+
+            existingProfile.setStudent(student);
+            student.setProfile(existingProfile);
+        }
+
+        return profileRepository.save(existingProfile);
     }
 
     public void deleteProfile(int id) {
