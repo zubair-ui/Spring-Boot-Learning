@@ -69,8 +69,17 @@ public class CourseService {
 
     public void deleteCourse(int id) {
 
-        Course existingCourse = getCourseById(id);
+        Course course = getCourseById(id);
 
-        courseRepository.delete(existingCourse);
+        List<Student> students =
+                studentRepository.findByCourseId(id);
+
+        for (Student student : students) {
+            student.setCourse(null);
+        }
+
+        studentRepository.saveAll(students);
+
+        courseRepository.delete(course);
     }
 }
