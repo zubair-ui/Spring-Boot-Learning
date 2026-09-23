@@ -23,11 +23,27 @@ public class GlobalExceptionHandler {
 
         return exception.getMessage();
     }
+    
+    @ExceptionHandler(StudentCourseNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public String handleStudentCourseNotFound(
+            StudentCourseNotFoundException exception) {
+
+        return exception.getMessage();
+    }
 
     @ExceptionHandler(CourseNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleCourseNotFound(
             CourseNotFoundException exception) {
+
+        return exception.getMessage();
+    }
+    
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleIllegalArgumentException(
+            IllegalArgumentException exception) {
 
         return exception.getMessage();
     }

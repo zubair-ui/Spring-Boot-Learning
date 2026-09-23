@@ -159,6 +159,47 @@ public class StudentController {
 
         return ResponseEntity.ok(toStudentResponse(updatedStudent));
     }
+    
+    @PostMapping("/students/{studentId}/courses/{courseId}")
+    public ResponseEntity<StudentResponse> addCourseToStudent(
+            @PathVariable @Positive(message = "Student ID must be positive")
+            int studentId,
+
+            @PathVariable @Positive(message = "Course ID must be positive")
+            int courseId) {
+
+        Course course = courseService.getCourseById(courseId);
+
+        Student updatedStudent =
+                studentService.addCourseToStudent(
+                        studentId,
+                        courseId,
+                        course
+                );
+
+        return ResponseEntity.ok(
+                toStudentResponse(updatedStudent)
+        );
+    }
+    
+    @DeleteMapping("/students/{studentId}/courses/{courseId}")
+    public ResponseEntity<StudentResponse> removeCourseFromStudent(
+            @PathVariable @Positive(message = "Student ID must be positive")
+            int studentId,
+
+            @PathVariable @Positive(message = "Course ID must be positive")
+            int courseId) {
+
+        Student updatedStudent =
+                studentService.removeCourseFromStudent(
+                        studentId,
+                        courseId
+                );
+
+        return ResponseEntity.ok(
+                toStudentResponse(updatedStudent)
+        );
+    }
 
     private StudentResponse toStudentResponse(Student student) {
 

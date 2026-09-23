@@ -6,7 +6,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.example.springlearning.exception.StudentCourseNotFoundException;
 import com.example.springlearning.exception.StudentNotFoundException;
+import com.example.springlearning.model.Course;
 import com.example.springlearning.model.Student;
 import com.example.springlearning.repository.StudentJpaRepository;
 import com.example.springlearning.repository.StudentProfileJpaRepository;
@@ -87,5 +89,38 @@ public class StudentService {
         studentRepository.delete(student);
 
         logger.info("Student with ID {} deleted successfully", id);
+    }
+    
+    public Student addCourseToStudent(
+            int studentId,
+            int courseId,
+            Course course) {
+
+        Student student = getStudentById(studentId);
+
+        if (!student.getCourses().contains(course)) {
+            student.getCourses().add(course);
+        }
+
+        return studentRepository.save(student);
+    }
+    
+    public Student removeCourseFromStudent(
+            int studentId,
+            int courseId) {
+
+        Student student = getStudentById(studentId);
+
+        boolean removed = student.getCourses()
+                .removeIf(course -> course.getId() == courseId);
+
+        if (!removed) {
+            throw new StudentCourseNotFoundException(
+                    studentId,
+                    courseId
+            );
+        }
+
+        return studentRepository.save(student);
     }
 }
