@@ -3,10 +3,18 @@ package com.example.springlearning.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import com.example.springlearning.model.Student;
 
 public interface StudentJpaRepository extends JpaRepository<Student, Integer> {
 
     List<Student> findByCoursesId(int courseId);
+    
+    @Query("""
+            SELECT DISTINCT s
+            FROM Student s
+            LEFT JOIN FETCH s.courses
+            """)    
+    List<Student> findAllWithCourses();
 }

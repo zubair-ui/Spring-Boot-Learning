@@ -33,7 +33,7 @@ public class StudentService {
 
     public List<Student> getStudents() {
         logger.info("Fetching all students");
-        return studentRepository.findAll();
+        return studentRepository.findAllWithCourses();
     }
 
     public Student getStudentById(int id) {
