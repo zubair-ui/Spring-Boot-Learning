@@ -2,6 +2,8 @@ package com.example.springlearning.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +46,18 @@ public class CourseService {
         getCourseById(courseId);
 
         return studentRepository.findByCoursesId(courseId);
+    }
+
+    public Page<Student> getStudentsByCourseId(
+            int courseId,
+            Pageable pageable) {
+
+        getCourseById(courseId);
+
+        return studentRepository.findByCoursesId(
+                courseId,
+                pageable
+        );
     }
 
     public Course updateCourse(Course course) {

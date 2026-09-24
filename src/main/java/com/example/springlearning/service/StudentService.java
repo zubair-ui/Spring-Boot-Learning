@@ -63,6 +63,41 @@ public class StudentService {
         return studentRepository
                 .findByNameContainingIgnoreCase(name, pageable);
     }
+    
+    public Page<Student> searchStudentsByEmail(
+            String email,
+            Pageable pageable) {
+
+        logger.info(
+                "Searching students by email: {} - page: {}, size: {}",
+                email,
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+
+        return studentRepository.findByEmailContainingIgnoreCase(
+                email,
+                pageable
+        );
+    }
+    
+    public Page<Student> searchStudents(
+            String name,
+            String email,
+            Pageable pageable) {
+
+        logger.info(
+                "Searching students - name: {}, email: {}",
+                name,
+                email
+        );
+
+        return studentRepository.searchStudents(
+                name,
+                email,
+                pageable
+        );
+    }
 
     public Student getStudentById(int id) {
         logger.info("Fetching student with ID: {}", id);
@@ -73,6 +108,8 @@ public class StudentService {
                     return new StudentNotFoundException(id);
                 });
     }
+    
+    
 
     public Student createStudent(Student student) {
         logger.info("Creating student with name: {}", student.getName());

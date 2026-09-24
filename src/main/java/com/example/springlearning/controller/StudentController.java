@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
@@ -94,12 +95,27 @@ public class StudentController {
     
     @GetMapping("/students/search")
     public Page<StudentResponse> searchStudents(
-            String name,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String email,
+
             @PageableDefault(size = 10, sort = "id")
             Pageable pageable) {
 
         return studentService
-                .searchStudentsByName(name, pageable)
+                .searchStudents(name, email, pageable)
+                .map(this::toStudentResponse);
+    }
+    
+    @GetMapping("/students/search/course")
+    public Page<StudentResponse> searchStudentsByCourse(
+            @RequestParam @Positive(message = "Course ID must be positive")
+            int courseId,
+
+            @PageableDefault(size = 10, sort = "id")
+            Pageable pageable) {
+
+        return courseService
+                .getStudentsByCourseId(courseId, pageable)
                 .map(this::toStudentResponse);
     }
 
