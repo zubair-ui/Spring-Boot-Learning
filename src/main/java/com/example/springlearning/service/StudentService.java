@@ -98,28 +98,28 @@ public class StudentService {
 
         Student student = getStudentById(studentId);
 
-        if (!student.getCourses().contains(course)) {
-            student.getCourses().add(course);
-        }
+        student.addCourse(course);
 
         return studentRepository.save(student);
     }
-    
+
     public Student removeCourseFromStudent(
             int studentId,
             int courseId) {
 
         Student student = getStudentById(studentId);
 
-        boolean removed = student.getCourses()
-                .removeIf(course -> course.getId() == courseId);
+        Course course = student.getCourses()
+                .stream()
+                .filter(c -> c.getId() == courseId)
+                .findFirst()
+                .orElseThrow(() ->
+                        new StudentCourseNotFoundException(
+                                studentId,
+                                courseId
+                        ));
 
-        if (!removed) {
-            throw new StudentCourseNotFoundException(
-                    studentId,
-                    courseId
-            );
-        }
+        student.removeCourse(course);
 
         return studentRepository.save(student);
     }

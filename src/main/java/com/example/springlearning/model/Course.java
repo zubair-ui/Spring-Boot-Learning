@@ -52,4 +52,22 @@ public class Course {
     public void setStudents(List<Student> students) {
         this.students = students;
     }
+    
+    public void addStudent(Student student) {
+
+        if (!students.contains(student)) {
+            students.add(student);
+        }
+
+        if (!student.getCourses().contains(this)) {
+            student.getCourses().add(this);
+        }
+    }
+
+    public void removeStudent(Student student) {
+
+        students.remove(student);
+
+        student.getCourses().remove(this);
+    }
 }

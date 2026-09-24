@@ -1,5 +1,6 @@
 package com.example.springlearning.exception;
 
+@SuppressWarnings("serial")
 public class StudentCourseNotFoundException extends RuntimeException {
 
     public StudentCourseNotFoundException(int studentId, int courseId) {
