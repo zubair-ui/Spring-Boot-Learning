@@ -1,6 +1,7 @@
 package com.example.springlearning.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +18,7 @@ import jakarta.validation.constraints.Positive;
 
 import com.example.springlearning.dto.CourseRequest;
 import com.example.springlearning.dto.CourseResponse;
+import com.example.springlearning.dto.CourseStudentCountResponse;
 import com.example.springlearning.dto.CourseStudentResponse;
 import com.example.springlearning.model.Course;
 import com.example.springlearning.service.CourseService;
@@ -39,6 +41,25 @@ public class CourseController {
         return courses.stream()
                 .map(this::toCourseResponse)
                 .toList();
+    }
+    
+    @GetMapping("/courses/stats/students")
+    public ResponseEntity<List<CourseStudentCountResponse>>
+            getStudentCountPerCourse() {
+
+        return ResponseEntity.ok(
+                courseService.getStudentCountPerCourse()
+        );
+    }
+    
+    @GetMapping("/courses/count")
+    public ResponseEntity<Map<String, Long>> getCourseCount() {
+
+        long count = courseService.getCourseCount();
+
+        return ResponseEntity.ok(
+                Map.of("count", count)
+        );
     }
 
     @GetMapping("/courses/{id}")

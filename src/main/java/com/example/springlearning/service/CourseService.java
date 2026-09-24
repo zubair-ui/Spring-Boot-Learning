@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.example.springlearning.dto.CourseStudentCountResponse;
 import com.example.springlearning.exception.CourseNotFoundException;
 import com.example.springlearning.model.Course;
 import com.example.springlearning.model.Student;
@@ -29,6 +30,15 @@ public class CourseService {
 
     public List<Course> getCourses() {
         return courseRepository.findAll();
+    }
+    
+    public long getCourseCount() {
+        return courseRepository.count();
+    }
+    
+    public List<CourseStudentCountResponse> getStudentCountPerCourse() {
+
+        return courseRepository.getStudentCountPerCourse();
     }
 
     public Course getCourseById(int id) {
