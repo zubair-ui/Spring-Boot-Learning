@@ -46,7 +46,7 @@ public class StudentController {
 
     @GetMapping("/students")
     public Page<StudentResponse> students(
-    		@PageableDefault(size = 10) Pageable pageable) {
+            @PageableDefault(size = 10, sort = "id") Pageable pageable) {
 
         return studentService.getStudents(pageable)
                 .map(this::toStudentResponse);
