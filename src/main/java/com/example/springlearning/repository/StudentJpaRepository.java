@@ -2,6 +2,8 @@ package com.example.springlearning.repository;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -17,4 +19,6 @@ public interface StudentJpaRepository extends JpaRepository<Student, Integer> {
             LEFT JOIN FETCH s.courses
             """)    
     List<Student> findAllWithCourses();
+    
+    Page<Student> findAll(Pageable pageable);
 }

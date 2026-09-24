@@ -4,6 +4,9 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,13 +45,11 @@ public class StudentController {
     }
 
     @GetMapping("/students")
-    public List<StudentResponse> students() {
+    public Page<StudentResponse> students(
+    		@PageableDefault(size = 10) Pageable pageable) {
 
-        List<Student> students = studentService.getStudents();
-
-        return students.stream()
-                .map(this::toStudentResponse)
-                .toList();
+        return studentService.getStudents(pageable)
+                .map(this::toStudentResponse);
     }
 
     @GetMapping("/students/{id}")

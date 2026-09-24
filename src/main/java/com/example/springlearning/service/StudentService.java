@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +36,17 @@ public class StudentService {
     public List<Student> getStudents() {
         logger.info("Fetching all students");
         return studentRepository.findAllWithCourses();
+    }
+    
+    public Page<Student> getStudents(Pageable pageable) {
+
+        logger.info(
+                "Fetching students - page: {}, size: {}",
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+
+        return studentRepository.findAll(pageable);
     }
 
     public Student getStudentById(int id) {
