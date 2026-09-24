@@ -91,6 +91,17 @@ public class StudentController {
                 .created(location)
                 .body(toStudentResponse(savedStudent));
     }
+    
+    @GetMapping("/students/search")
+    public Page<StudentResponse> searchStudents(
+            String name,
+            @PageableDefault(size = 10, sort = "id")
+            Pageable pageable) {
+
+        return studentService
+                .searchStudentsByName(name, pageable)
+                .map(this::toStudentResponse);
+    }
 
     @PutMapping("/students/{id}")
     public ResponseEntity<StudentResponse> updateStudent(

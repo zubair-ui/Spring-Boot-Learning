@@ -23,4 +23,9 @@ public interface StudentJpaRepository extends JpaRepository<Student, Integer> {
 
     @EntityGraph(attributePaths = "courses")
     Page<Student> findAll(Pageable pageable);
+    
+    Page<Student> findByNameContainingIgnoreCase(
+            String name,
+            Pageable pageable
+    );
 }

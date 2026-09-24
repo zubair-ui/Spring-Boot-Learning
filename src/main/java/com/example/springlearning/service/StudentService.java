@@ -48,6 +48,21 @@ public class StudentService {
 
         return studentRepository.findAll(pageable);
     }
+    
+    public Page<Student> searchStudentsByName(
+            String name,
+            Pageable pageable) {
+
+        logger.info(
+                "Searching students by name: {} - page: {}, size: {}",
+                name,
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+
+        return studentRepository
+                .findByNameContainingIgnoreCase(name, pageable);
+    }
 
     public Student getStudentById(int id) {
         logger.info("Fetching student with ID: {}", id);
