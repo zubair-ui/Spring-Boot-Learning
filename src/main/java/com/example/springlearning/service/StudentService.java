@@ -5,6 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.springlearning.exception.StudentCourseNotFoundException;
 import com.example.springlearning.exception.StudentNotFoundException;
@@ -91,6 +92,7 @@ public class StudentService {
         logger.info("Student with ID {} deleted successfully", id);
     }
     
+    @Transactional
     public Student addCourseToStudent(
             int studentId,
             int courseId,
@@ -102,7 +104,8 @@ public class StudentService {
 
         return studentRepository.save(student);
     }
-
+    
+    @Transactional
     public Student removeCourseFromStudent(
             int studentId,
             int courseId) {
