@@ -59,6 +59,7 @@ public class CourseService {
         return courseRepository.save(existingCourse);
     }
 
+    @Transactional
     public Course patchCourse(int id, String name) {
 
         Course existingCourse = getCourseById(id);
@@ -67,7 +68,7 @@ public class CourseService {
             existingCourse.setName(name);
         }
 
-        return courseRepository.save(existingCourse);
+        return existingCourse;
     }
     
     @Transactional
