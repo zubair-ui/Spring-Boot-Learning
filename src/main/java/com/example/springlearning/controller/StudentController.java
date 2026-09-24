@@ -3,6 +3,7 @@ package com.example.springlearning.controller;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -51,6 +52,16 @@ public class StudentController {
 
         return studentService.getStudents(pageable)
                 .map(this::toStudentResponse);
+    }
+    
+    @GetMapping("/students/count")
+    public ResponseEntity<Map<String, Long>> getStudentCount() {
+
+        long count = studentService.getStudentCount();
+
+        return ResponseEntity.ok(
+                Map.of("count", count)
+        );
     }
 
     @GetMapping("/students/{id}")

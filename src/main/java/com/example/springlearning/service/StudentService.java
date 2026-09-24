@@ -38,6 +38,13 @@ public class StudentService {
         return studentRepository.findAllWithCourses();
     }
     
+    public long getStudentCount() {
+
+        logger.info("Counting students");
+
+        return studentRepository.count();
+    }	
+    
     public Page<Student> getStudents(Pageable pageable) {
 
         logger.info(
